@@ -25,7 +25,6 @@ public class JoinService {
         String password = joinDTO.getPassword();
 
         Boolean isExist = userRepository.existsByUsername(username);
-
         if (isExist) {
 
             return;
