@@ -30,7 +30,7 @@ public class JWTUtil {
 
     private SecretKey secretKey;
         // value어노테이션을 통해 properties에 있는 변수값을 들고올 수 있음
-    public JWTUtil(@Value("${spring.jwt.jwt.secret.key}")String secret) {
+    public JWTUtil(@Value("${spring.jwt.secret.key}")String secret) {
         this.secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
     }
 

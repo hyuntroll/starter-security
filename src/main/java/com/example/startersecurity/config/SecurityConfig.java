@@ -1,5 +1,6 @@
 package com.example.startersecurity.config;
 
+import com.example.startersecurity.JWT.JWTUtil;
 import com.example.startersecurity.JWT.LoginFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,10 +18,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final AuthenticationConfiguration authenticationConfiguration;
-
-    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration) {
+    private final JWTUtil jwtutil;
+    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtutil)  {
 
         this.authenticationConfiguration = authenticationConfiguration;
+        this.jwtutil = jwtutil;
     }
 
     @Bean
@@ -61,7 +63,7 @@ public class SecurityConfig {
 
         // 필터 등록
         http
-                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration)), UsernamePasswordAuthenticationFilter.class);
+                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtutil), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
