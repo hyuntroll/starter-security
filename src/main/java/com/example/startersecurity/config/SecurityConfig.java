@@ -1,5 +1,6 @@
 package com.example.startersecurity.config;
 
+import com.example.startersecurity.JWT.JWTFilter;
 import com.example.startersecurity.JWT.JWTUtil;
 import com.example.startersecurity.JWT.LoginFilter;
 import org.springframework.context.annotation.Bean;
@@ -45,7 +46,7 @@ public class SecurityConfig {
                 .csrf((auth) -> auth.disable());
         //From 로그인 방식 disable
         http
-                .formLogin((form) -> form.disable());
+                .formLogin((auth) -> auth.disable());
         //http basic 인증 방식 disable
         http
                 .httpBasic((auth) -> auth.disable());
@@ -56,14 +57,19 @@ public class SecurityConfig {
                         .requestMatchers("/login", "/", "join").permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")
                         .anyRequest().authenticated()); // 로그인한 사용자만
-        //세션 설정
+
+        // JWTFilter 등록
         http
-                .sessionManagement((session) -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                .addFilterBefore(new JWTFilter(jwtutil), LoginFilter.class);
 
         // 필터 등록
         http
                 .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtutil), UsernamePasswordAuthenticationFilter.class);
+
+        //세션 설정
+        http
+                .sessionManagement((session) -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return http.build();
     }
